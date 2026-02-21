@@ -1353,6 +1353,13 @@ section.in-view {
     gap: 0.7rem;
   }
 
+  .cases-grid .case.scroll-pop,
+  .cases-grid .case.scroll-pop.on {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   .case {
     padding: 0.72rem;
   }
