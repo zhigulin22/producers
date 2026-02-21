@@ -1202,10 +1202,26 @@ section.in-view {
 
   .cases-grid {
     grid-template-areas: none;
+    gap: 0.9rem;
   }
 
   .cases-grid > article {
     grid-area: auto !important;
+  }
+
+  .case-featured {
+    min-height: 0;
+    background: rgba(185, 255, 85, 0.08);
+  }
+
+  .case-click {
+    min-height: 0;
+  }
+
+  .cases-grid .case.scroll-pop,
+  .cases-grid .case.scroll-pop.on {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .case-feature-grid {
@@ -1350,7 +1366,7 @@ section.in-view {
   }
 
   .cases-grid {
-    gap: 0.7rem;
+    gap: 0.62rem;
   }
 
   .cases-grid .case.scroll-pop,
@@ -1361,12 +1377,12 @@ section.in-view {
   }
 
   .case {
-    padding: 0.72rem;
+    padding: 0.62rem;
   }
 
   .case-click {
     min-height: 0;
-    gap: 0.42rem;
+    gap: 0.34rem;
   }
 
   .case-featured {
@@ -1374,7 +1390,7 @@ section.in-view {
   }
 
   .case-mini {
-    font-size: 0.72rem;
+    font-size: 0.67rem;
   }
 
   .case-flags {
@@ -1382,8 +1398,8 @@ section.in-view {
   }
 
   .case-flags span {
-    font-size: 0.64rem;
-    padding: 0.2rem 0.38rem;
+    font-size: 0.61rem;
+    padding: 0.16rem 0.32rem;
   }
 
   .nums {
@@ -1392,11 +1408,11 @@ section.in-view {
   }
 
   .nums strong {
-    font-size: 1.26rem;
+    font-size: 1.12rem;
   }
 
   .nums span {
-    font-size: 0.67rem;
+    font-size: 0.62rem;
   }
 
   .feature-side {

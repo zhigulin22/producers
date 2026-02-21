@@ -299,6 +299,7 @@ function setupScrollFx() {
   const bar = document.getElementById("scrollProgress");
   const sections = document.querySelectorAll("main section");
   const animated = document.querySelectorAll(".scroll-pop, .scroll-slide-left, .scroll-slide-right");
+  const isMobile = window.matchMedia("(max-width: 980px)").matches;
 
   const onScroll = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -326,7 +327,7 @@ function setupScrollFx() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("on");
-        } else {
+        } else if (!isMobile) {
           entry.target.classList.remove("on");
         }
       });
@@ -335,6 +336,11 @@ function setupScrollFx() {
   );
 
   animated.forEach((el) => animatedObserver.observe(el));
+
+  if (isMobile) {
+    // Mobile UX: keep cards visible and stable instead of hide/show on each small scroll.
+    animated.forEach((el) => el.classList.add("on"));
+  }
 }
 
 function setupSpotlight() {
@@ -345,6 +351,10 @@ function setupSpotlight() {
 }
 
 function setupTilt() {
+  if (window.matchMedia("(hover: none), (pointer: coarse)").matches) {
+    return;
+  }
+
   const cards = document.querySelectorAll("[data-tilt]");
 
   cards.forEach((card) => {
