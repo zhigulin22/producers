@@ -1204,6 +1204,10 @@ section.in-view {
     grid-template-areas: none;
   }
 
+  .cases-grid > article {
+    grid-area: auto !important;
+  }
+
   .case-feature-grid {
     grid-template-columns: 1fr;
   }
