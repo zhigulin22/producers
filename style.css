@@ -891,6 +891,52 @@ h2 {
   color: #d8ffa2;
 }
 
+/* Team section hard overrides for readability */
+.team.section-tone-lime {
+  max-width: 920px;
+  margin-inline: auto;
+  padding: 1rem 1.05rem;
+}
+
+.team.section-tone-lime .team-head h2 {
+  color: #0f1628;
+}
+
+.team.section-tone-lime .team-head p {
+  color: #25304a;
+  font-weight: 500;
+}
+
+.team.section-tone-lime .team-layout {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 760px;
+  gap: 0.55rem;
+}
+
+.team.section-tone-lime .team-power {
+  background: linear-gradient(165deg, rgba(10, 16, 33, 0.96), rgba(15, 24, 44, 0.94));
+  border: 1px solid rgba(185, 255, 85, 0.35);
+  box-shadow: 0 12px 24px rgba(10, 16, 33, 0.32);
+}
+
+.team.section-tone-lime .team-kicker {
+  color: #8feeff;
+}
+
+.team.section-tone-lime .team-power h3 {
+  color: #b9ff55;
+}
+
+.team.section-tone-lime .team-power p {
+  color: #e5edff;
+}
+
+.team.section-tone-lime .team-pills span {
+  color: #d9ff9f;
+  border-color: rgba(185, 255, 85, 0.34);
+  background: rgba(185, 255, 85, 0.12);
+}
+
 .sim {
   padding: 1.25rem;
 }
