@@ -390,8 +390,8 @@ section {
 }
 
 .section-tone-lime {
-  background: linear-gradient(145deg, #b9ff55, #ddff97 72%);
-  color: #10151f;
+  background: linear-gradient(145deg, #9fe35a, #d4f7a5 72%);
+  color: #121827;
   border: 1px solid rgba(16, 21, 31, 0.22);
   box-shadow: 0 14px 34px rgba(185, 255, 85, 0.22);
 }
@@ -402,7 +402,7 @@ section {
 .section-tone-lime li,
 .section-tone-lime .team-kicker,
 .section-tone-lime .strategy {
-  color: #10151f;
+  color: #121827;
 }
 
 .section-tone-lime .btn-main {
@@ -414,9 +414,33 @@ section {
 .section-tone-lime .team-power,
 .section-tone-lime .team-card,
 .section-tone-lime .team-pills span {
-  background: rgba(16, 21, 31, 0.08);
-  border-color: rgba(16, 21, 31, 0.25);
-  color: #10151f;
+  background: rgba(12, 18, 34, 0.9);
+  border-color: rgba(12, 18, 34, 0.65);
+  color: #eaf1ff;
+}
+
+.section-tone-lime .team-power h3 {
+  color: #b9ff55;
+}
+
+.section-tone-lime .team-kicker {
+  color: #8de8ff;
+}
+
+.section-tone-lime .team-power p {
+  color: #d9e5ff;
+}
+
+.section-tone-lime .team-pills span {
+  color: #d9ff9f;
+  border-color: rgba(185, 255, 85, 0.35);
+  background: rgba(185, 255, 85, 0.12);
+}
+
+.section-tone-lime .team-layout {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 760px;
+  gap: 0.6rem;
 }
 
 .section-tone-sunset {
@@ -449,7 +473,7 @@ main section.reveal.visible {
   animation: sectionRise 0.55s ease;
 }
 
- sectionRise {
+@keyframes sectionRise {
   from { transform: translateY(16px); opacity: 0.92; }
   to { transform: translateY(0); opacity: 1; }
 }
