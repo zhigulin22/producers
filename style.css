@@ -379,6 +379,79 @@ main {
 
 section {
   margin-top: clamp(2rem, 4vw, 3.2rem);
+  position: relative;
+}
+
+.section-tone-dark {
+  background: linear-gradient(165deg, rgba(8, 14, 34, 0.92), rgba(7, 10, 22, 0.86));
+  border: 1px solid rgba(88, 115, 182, 0.34);
+  border-radius: 24px;
+  padding: 1.2rem;
+}
+
+.section-tone-lime {
+  background: linear-gradient(145deg, #b9ff55, #ddff97 72%);
+  color: #10151f;
+  border: 1px solid rgba(16, 21, 31, 0.22);
+  box-shadow: 0 14px 34px rgba(185, 255, 85, 0.22);
+}
+
+.section-tone-lime p,
+.section-tone-lime h2,
+.section-tone-lime h3,
+.section-tone-lime li,
+.section-tone-lime .team-kicker,
+.section-tone-lime .strategy {
+  color: #10151f;
+}
+
+.section-tone-lime .btn-main {
+  background: #0f1628;
+  color: #eaffc8;
+  box-shadow: 0 8px 24px rgba(16, 21, 31, 0.24);
+}
+
+.section-tone-lime .team-power,
+.section-tone-lime .team-card,
+.section-tone-lime .team-pills span {
+  background: rgba(16, 21, 31, 0.08);
+  border-color: rgba(16, 21, 31, 0.25);
+  color: #10151f;
+}
+
+.section-tone-sunset {
+  background: linear-gradient(140deg, rgba(255, 143, 66, 0.2), rgba(255, 196, 132, 0.1) 35%, rgba(13, 17, 33, 0.82));
+  border: 1px solid rgba(255, 143, 66, 0.28);
+}
+
+.section-tone-cyan {
+  background: linear-gradient(160deg, rgba(78, 240, 255, 0.2), rgba(17, 27, 52, 0.9) 42%, rgba(10, 15, 30, 0.94));
+  border: 1px solid rgba(78, 240, 255, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(78, 240, 255, 0.12);
+}
+
+.section-tone-dark::after,
+.section-tone-lime::after,
+.section-tone-sunset::after,
+.section-tone-cyan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 95%);
+}
+
+main section.reveal.visible {
+  animation: sectionRise 0.55s ease;
+}
+
+ sectionRise {
+  from { transform: translateY(16px); opacity: 0.92; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .attention {

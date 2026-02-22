@@ -2,8 +2,7 @@ const root = document.documentElement;
 
 const pulse = {
   launches: document.getElementById("pulseLaunches"),
-  producerRevenue: document.getElementById("pulseProducerRevenue"),
-  totalRevenue: document.getElementById("pulseTotalRevenue"),
+    totalRevenue: document.getElementById("pulseTotalRevenue"),
   reach: document.getElementById("pulseReach"),
   leads: document.getElementById("pulseLeads"),
   sales: document.getElementById("pulseSales"),
@@ -31,14 +30,14 @@ const inputs = {
 const NICHE_CONFIG = {
   soft: { label: "Мягкая ниша", per100Min: 50000, per100Max: 50000 },
   hard: { label: "Твердая ниша", per100Min: 110000, per100Max: 110000 },
-  finance: { label: "Финансы", per100Min: 300000, per100Max: 400000 },
+  finance: { label: "Финансы", per100Min: 300000, per100Max: 300000 },
   it: { label: "IT", per100Min: 150000, per100Max: 150000 }
 };
 
 let selectedNiche = "soft";
 
 function animatePulse() {
-  if (!pulse.launches || !pulse.producerRevenue || !pulse.totalRevenue || !pulse.reach || !pulse.leads || !pulse.sales || !pulse.conv) {
+  if (!pulse.launches || !pulse.totalRevenue || !pulse.reach || !pulse.leads || !pulse.sales || !pulse.conv) {
     return;
   }
 
@@ -58,9 +57,7 @@ function animatePulse() {
   };
 
   const launches = 7;
-  const defaults = {
-    producerRevenue: 5842000,
-    totalRevenue: 34115000,
+  const defaults = {    totalRevenue: 34115000,
     reach: 14264,
     leads: 4841,
     sales: 853,
@@ -76,9 +73,7 @@ function animatePulse() {
       if (!raw) return { ...defaults };
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== "object") return { ...defaults };
-      return {
-        producerRevenue: Number(parsed.producerRevenue) || defaults.producerRevenue,
-        totalRevenue: Number(parsed.totalRevenue) || defaults.totalRevenue,
+      return {        totalRevenue: Number(parsed.totalRevenue) || defaults.totalRevenue,
         reach: Number(parsed.reach) || defaults.reach,
         leads: Number(parsed.leads) || defaults.leads,
         sales: Number(parsed.sales) || defaults.sales,
@@ -98,9 +93,7 @@ function animatePulse() {
     }
   };
 
-  const initial = loadState();
-  let producerRevenue = initial.producerRevenue;
-  let totalRevenue = initial.totalRevenue;
+  const initial = loadState();  let totalRevenue = initial.totalRevenue;
   let reach = initial.reach;
   let leads = initial.leads;
   let sales = initial.sales;
@@ -116,9 +109,7 @@ function animatePulse() {
   let salesCarry = 0;
 
   const render = () => {
-    pulse.launches.textContent = String(launches);
-    pulse.producerRevenue.textContent = `₽${num.format(producerRevenue)}`;
-    pulse.totalRevenue.textContent = `~₽${num.format(totalRevenue)}`;
+    pulse.launches.textContent = String(launches);    pulse.totalRevenue.textContent = `~₽${num.format(totalRevenue)}`;
     pulse.reach.textContent = num.format(reach);
     pulse.leads.textContent = num.format(leads);
     pulse.sales.textContent = num.format(sales);
@@ -152,14 +143,10 @@ function animatePulse() {
 
     const avgCheck = 25000 + Math.floor(Math.random() * 5001);
     const revenueDelta = salesDelta * avgCheck;
-    const producerDelta = Math.round(revenueDelta * (0.43 + Math.random() * 0.1));
-
     reach += reachDelta;
     leads = nextLeads;
     sales = nextSales;
-    totalRevenue += revenueDelta;
-    producerRevenue += producerDelta;
-    conv = projectedConv;
+    totalRevenue += revenueDelta;    conv = projectedConv;
     lastUpdateTs += refreshMs;
   };
 
@@ -177,9 +164,7 @@ function animatePulse() {
       updateData();
     }
     render();
-    saveState({
-      producerRevenue,
-      totalRevenue,
+    saveState({      totalRevenue,
       reach,
       leads,
       sales,
@@ -205,9 +190,7 @@ function animatePulse() {
 
   // Save state even if no new step yet (keeps timestamp/state consistent).
   window.addEventListener("beforeunload", () => {
-    saveState({
-      producerRevenue,
-      totalRevenue,
+    saveState({      totalRevenue,
       reach,
       leads,
       sales,
@@ -216,9 +199,7 @@ function animatePulse() {
     });
   });
 
-  saveState({
-    producerRevenue,
-    totalRevenue,
+  saveState({      totalRevenue,
     reach,
     leads,
     sales,
