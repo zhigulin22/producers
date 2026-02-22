@@ -279,8 +279,7 @@ function setupReveal() {
 function setupScrollFx() {
   const bar = document.getElementById("scrollProgress");
   const sections = document.querySelectorAll("main section");
-  const animated = document.querySelectorAll(".scroll-pop, .scroll-slide-left, .scroll-slide-right");
-  const isMobile = window.matchMedia("(max-width: 980px)").matches;
+  const animated = document.querySelectorAll(".scroll-pop, .scroll-slide-left, .scroll-slide-right, .scroll-zoom");
 
   const onScroll = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -308,7 +307,7 @@ function setupScrollFx() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("on");
-        } else if (!isMobile) {
+        } else {
           entry.target.classList.remove("on");
         }
       });
@@ -317,11 +316,6 @@ function setupScrollFx() {
   );
 
   animated.forEach((el) => animatedObserver.observe(el));
-
-  if (isMobile) {
-    // Mobile UX: keep cards visible and stable instead of hide/show on each small scroll.
-    animated.forEach((el) => el.classList.add("on"));
-  }
 }
 
 function setupSpotlight() {
