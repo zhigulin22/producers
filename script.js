@@ -56,29 +56,45 @@ function animatePulse() {
     return Number(((salesCount / leadsCount) * 100).toFixed(1));
   };
 
+  const asNum = (value, fallback) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
   const launches = 7;
-  const defaults = {    totalRevenue: 34115000,
+  const refreshMs = 5 * 60 * 60 * 1000;
+  const schedulerCheckMs = 60 * 1000;
+  const updatesPerMonth = (30 * 24) / 5;
+  const leadsPerUpdate = 400 / updatesPerMonth;
+
+  const defaults = {
+    totalRevenue: 34115000,
     reach: 14264,
     leads: 4841,
     sales: 853,
     targetConv: randomConv(),
-    lastUpdateTs: Date.now() - (5 * 60 * 60 * 1000)
+    leadCarry: 0,
+    salesCarry: 0,
+    lastUpdateTs: Date.now() - refreshMs
   };
 
-  const storageKey = "launch_pulse_state_v5";
+  const storageKey = 'launch_pulse_state_v6';
 
   const loadState = () => {
     try {
       const raw = window.localStorage.getItem(storageKey);
       if (!raw) return { ...defaults };
       const parsed = JSON.parse(raw);
-      if (!parsed || typeof parsed !== "object") return { ...defaults };
-      return {        totalRevenue: Number(parsed.totalRevenue) || defaults.totalRevenue,
-        reach: Number(parsed.reach) || defaults.reach,
-        leads: Number(parsed.leads) || defaults.leads,
-        sales: Number(parsed.sales) || defaults.sales,
-        targetConv: Number(parsed.targetConv) || defaults.targetConv,
-        lastUpdateTs: Number(parsed.lastUpdateTs) || defaults.lastUpdateTs
+      if (!parsed || typeof parsed !== 'object') return { ...defaults };
+      return {
+        totalRevenue: asNum(parsed.totalRevenue, defaults.totalRevenue),
+        reach: asNum(parsed.reach, defaults.reach),
+        leads: asNum(parsed.leads, defaults.leads),
+        sales: asNum(parsed.sales, defaults.sales),
+        targetConv: normalizeConv(asNum(parsed.targetConv, defaults.targetConv)),
+        leadCarry: asNum(parsed.leadCarry, defaults.leadCarry),
+        salesCarry: asNum(parsed.salesCarry, defaults.salesCarry),
+        lastUpdateTs: asNum(parsed.lastUpdateTs, defaults.lastUpdateTs)
       };
     } catch {
       return { ...defaults };
@@ -89,39 +105,52 @@ function animatePulse() {
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(state));
     } catch {
-      // Ignore storage errors (private mode, quota, etc.) and keep live logic running.
+      // noop
     }
   };
 
-  const initial = loadState();  let totalRevenue = initial.totalRevenue;
+  const initial = loadState();
+  let totalRevenue = initial.totalRevenue;
   let reach = initial.reach;
   let leads = initial.leads;
   let sales = initial.sales;
   let targetConv = normalizeConv(initial.targetConv);
+  let leadCarry = initial.leadCarry;
+  let salesCarry = initial.salesCarry;
   let lastUpdateTs = initial.lastUpdateTs;
   let conv = convFromCounts(leads, sales);
-  const num = new Intl.NumberFormat("ru-RU");
-  const refreshMs = 5 * 60 * 60 * 1000;
-  const updatesPerMonth = (30 * 24) / 5; // 144 updates at 5-hour interval
-  const leadsPerUpdate = 400 / updatesPerMonth; // ~2.78 leads/update
-  const schedulerCheckMs = 60 * 1000;
-  let leadCarry = 0;
-  let salesCarry = 0;
+
+  const num = new Intl.NumberFormat('ru-RU');
+
+  const persist = () => {
+    saveState({
+      totalRevenue,
+      reach,
+      leads,
+      sales,
+      targetConv,
+      leadCarry,
+      salesCarry,
+      lastUpdateTs
+    });
+  };
 
   const render = () => {
-    pulse.launches.textContent = String(launches);    pulse.totalRevenue.textContent = `~₽${num.format(totalRevenue)}`;
+    pulse.launches.textContent = String(launches);
+    pulse.totalRevenue.textContent = '~₽' + num.format(totalRevenue);
     pulse.reach.textContent = num.format(reach);
     pulse.leads.textContent = num.format(leads);
     pulse.sales.textContent = num.format(sales);
-    pulse.conv.textContent = `${conv.toFixed(1)}%`;
+    pulse.conv.textContent = conv.toFixed(1) + '%';
   };
 
   const updateData = () => {
-    targetConv = normalizeConv(targetConv + (Math.random() - 0.5) * 0.6);
+    targetConv = normalizeConv(targetConv + (Math.random() - 0.5) * 0.5);
 
-    const reachDelta = 4 + Math.floor(Math.random() * 10);
-    leadCarry += leadsPerUpdate + (Math.random() - 0.5) * 0.5;
-    const leadDelta = Math.max(0, Math.floor(leadCarry));
+    const reachDelta = 3 + Math.floor(Math.random() * 8);
+
+    leadCarry += leadsPerUpdate + (Math.random() - 0.35) * 0.5;
+    const leadDelta = Math.max(1, Math.floor(leadCarry));
     leadCarry -= leadDelta;
 
     salesCarry += leadDelta * (targetConv / 100);
@@ -129,90 +158,56 @@ function animatePulse() {
     salesCarry -= salesDelta;
 
     const nextLeads = leads + leadDelta;
-    let nextSales = sales + salesDelta;
-    let projectedConv = convFromCounts(nextLeads, nextSales);
-
-    if (Number.isInteger(projectedConv) && nextLeads > 0) {
-      const altConv = convFromCounts(nextLeads, nextSales + 1);
-      if (altConv <= 19.9) {
-        salesDelta += 1;
-        nextSales += 1;
-        projectedConv = altConv;
-      }
+    const expectedSales = Math.floor((nextLeads * targetConv) / 100);
+    if (sales + salesDelta < expectedSales) {
+      salesDelta = expectedSales - sales;
+      salesCarry = 0;
     }
 
+    const nextSales = sales + Math.max(0, salesDelta);
     const avgCheck = 25000 + Math.floor(Math.random() * 5001);
-    const revenueDelta = salesDelta * avgCheck;
+    const revenueDelta = Math.max(0, salesDelta) * avgCheck;
+
     reach += reachDelta;
     leads = nextLeads;
     sales = nextSales;
-    totalRevenue += revenueDelta;    conv = projectedConv;
+    totalRevenue += revenueDelta;
+    conv = convFromCounts(leads, sales);
     lastUpdateTs += refreshMs;
   };
-
-  render();
 
   const runMissedUpdates = () => {
     const now = Date.now();
     if (lastUpdateTs > now + refreshMs) {
-      // Guard against system clock skew or corrupted storage values.
       lastUpdateTs = now;
     }
+
     const missedSteps = Math.max(0, Math.floor((now - lastUpdateTs) / refreshMs));
     if (missedSteps <= 0) return;
+
     for (let i = 0; i < missedSteps; i += 1) {
       updateData();
     }
+
     render();
-    saveState({      totalRevenue,
-      reach,
-      leads,
-      sales,
-      targetConv,
-      lastUpdateTs
-    });
+    persist();
   };
 
-  // Catch up missed 5-hour updates after page refresh/reopen.
+  render();
   runMissedUpdates();
 
-  // Reliable scheduler: checks every minute and applies all due 5-hour steps.
   window.setInterval(runMissedUpdates, schedulerCheckMs);
 
-  // Also re-check immediately when tab becomes active again.
-  document.addEventListener("visibilitychange", () => {
+  document.addEventListener('visibilitychange', () => {
     if (!document.hidden) runMissedUpdates();
   });
 
-  window.addEventListener("focus", () => {
-    runMissedUpdates();
-  });
+  window.addEventListener('focus', runMissedUpdates);
+  window.addEventListener('pageshow', runMissedUpdates);
+  window.addEventListener('beforeunload', persist);
 
-  // Save state even if no new step yet (keeps timestamp/state consistent).
-  window.addEventListener("beforeunload", () => {
-    saveState({      totalRevenue,
-      reach,
-      leads,
-      sales,
-      targetConv,
-      lastUpdateTs
-    });
-  });
-
-  saveState({      totalRevenue,
-    reach,
-    leads,
-    sales,
-    targetConv,
-    lastUpdateTs
-  });
-
-  // Fallback for very long sessions: re-arm scheduler if browser dropped timers.
-  window.addEventListener("pageshow", () => {
-    runMissedUpdates();
-  });
+  persist();
 }
-
 function recalc() {
   const reach = Number(sliders.reach.value);
   const niche = NICHE_CONFIG[selectedNiche];
