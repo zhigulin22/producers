@@ -66,6 +66,8 @@ function animatePulse() {
   const schedulerCheckMs = 60 * 1000;
   const updatesPerMonth = (30 * 24) / 5;
   const leadsPerUpdate = 400 / updatesPerMonth;
+  const avgCheckMin = 30000;
+  const avgCheckMax = 40000;
 
   const defaults = {
     totalRevenue: 34115000,
@@ -149,7 +151,7 @@ function animatePulse() {
 
     const reachDelta = 3 + Math.floor(Math.random() * 8);
 
-    leadCarry += leadsPerUpdate + (Math.random() - 0.35) * 0.5;
+    leadCarry += leadsPerUpdate + (Math.random() - 0.5) * 0.35;
     const leadDelta = Math.max(1, Math.floor(leadCarry));
     leadCarry -= leadDelta;
 
@@ -158,14 +160,8 @@ function animatePulse() {
     salesCarry -= salesDelta;
 
     const nextLeads = leads + leadDelta;
-    const expectedSales = Math.floor((nextLeads * targetConv) / 100);
-    if (sales + salesDelta < expectedSales) {
-      salesDelta = expectedSales - sales;
-      salesCarry = 0;
-    }
-
     const nextSales = sales + Math.max(0, salesDelta);
-    const avgCheck = 25000 + Math.floor(Math.random() * 5001);
+    const avgCheck = avgCheckMin + Math.floor(Math.random() * (avgCheckMax - avgCheckMin + 1));
     const revenueDelta = Math.max(0, salesDelta) * avgCheck;
 
     reach += reachDelta;
@@ -182,7 +178,8 @@ function animatePulse() {
       lastUpdateTs = now;
     }
 
-    const missedSteps = Math.max(0, Math.floor((now - lastUpdateTs) / refreshMs));
+    const rawMissedSteps = Math.max(0, Math.floor((now - lastUpdateTs) / refreshMs));
+    const missedSteps = Math.min(rawMissedSteps, updatesPerMonth * 2);
     if (missedSteps <= 0) return;
 
     for (let i = 0; i < missedSteps; i += 1) {
