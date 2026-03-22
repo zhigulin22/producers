@@ -65,12 +65,12 @@ function animatePulse() {
   const refreshMs = 5 * 60 * 60 * 1000;
   const schedulerCheckMs = 60 * 1000;
   const updatesPerMonth = (30 * 24) / 5;
-  const leadsPerUpdate = 400 / updatesPerMonth;
-  const avgCheckMin = 30000;
-  const avgCheckMax = 40000;
+  const leadsPerUpdate = 360 / updatesPerMonth;
+  const avgCheckMin = 29000;
+  const avgCheckMax = 36000;
 
   const defaults = {
-    totalRevenue: 34115000,
+    totalRevenue: 24000000,
     reach: 14264,
     leads: 4841,
     sales: 853,
@@ -80,7 +80,7 @@ function animatePulse() {
     lastUpdateTs: Date.now() - refreshMs
   };
 
-  const storageKey = 'launch_pulse_state_v6';
+  const storageKey = 'launch_pulse_state_v7';
 
   const loadState = () => {
     try {
